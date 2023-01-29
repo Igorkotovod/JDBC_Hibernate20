@@ -8,21 +8,19 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "lastName", nullable = false)
+    @Column(name = "lastName")
     private String lastName;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private Byte age;
 
-    public User() {
-
-    }
+    public User() {}
 
     public User(String name, String lastName, Byte age) {
         this.name = name;

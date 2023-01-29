@@ -27,7 +27,7 @@ public class Util {
     }
 
     private static SessionFactory sessionFactory;
-    public static SessionFactory getSessionFactory() {
+    public static SessionFactory getCurrentSession() {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
