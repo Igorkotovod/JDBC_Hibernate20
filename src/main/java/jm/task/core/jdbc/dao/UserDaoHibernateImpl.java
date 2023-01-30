@@ -10,7 +10,6 @@ public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {}
 
     SessionFactory sessionFactory = Util.getCurrentSession();
-    //Session session = sessionFactory.getCurrentSession();
 
     @Override
     public void createUsersTable() {
@@ -26,7 +25,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void saveUser(String name, String lastName, byte age) {
         Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
-            session.save(new User());
+            session.save(new User(name, lastName, age));
             session.getTransaction().commit();
 
     }
