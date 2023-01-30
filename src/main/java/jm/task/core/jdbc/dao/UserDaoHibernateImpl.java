@@ -23,16 +23,21 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Session session = sessionFactory.getCurrentSession();
+        try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
             session.save(new User(name, lastName, age));
             session.getTransaction().commit();
-
+            session.close();
+        }
     }
 
     @Override
     public void removeUserById(long id) {
-
+        try (Session session = sessionFactory.openSession()) {
+            User user = session.get(User.class, id);
+            session.delete(user);
+            session.close();
+        }
     }
 
     @Override
