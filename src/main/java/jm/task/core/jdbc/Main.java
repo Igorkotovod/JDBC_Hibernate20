@@ -25,12 +25,12 @@ public class Main {
             System.out.println("User с именем – " + user.getName() + " добавлен в базу данных");
         }
 
-//        for (User user : userService.getAllUsers()) {
-//            System.out.println(user);
-//        }
-//
-//        userService.cleanUsersTable();
-//
-//        userService.dropUsersTable();
+        for (User user : userService.getAllUsers()) {
+            System.out.println(user);
+        }
+
+        userService.cleanUsersTable();
+
+        userService.dropUsersTable();
     }
 }
