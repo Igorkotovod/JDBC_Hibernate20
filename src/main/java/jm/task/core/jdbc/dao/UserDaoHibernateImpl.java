@@ -9,6 +9,8 @@ import org.hibernate.Transaction;
 import java.util.List;
 
 import static jm.task.core.jdbc.dao.UserDaoJDBCImpl.*;
+import static org.hibernate.resource.transaction.spi.TransactionStatus.ACTIVE;
+import static org.hibernate.resource.transaction.spi.TransactionStatus.MARKED_ROLLBACK;
 
 public class UserDaoHibernateImpl implements UserDao {
 
@@ -44,32 +46,48 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.getTransaction();
+        try{
+            tx.begin();
             session.persist(new User(name, lastName, age));
-            session.getTransaction().commit();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.getStatus() == ACTIVE || tx.getStatus() == MARKED_ROLLBACK) {
+                tx.rollback();
+            }
+        } finally {
             session.close();
         }
     }
 
+
+
     @Override
     public void removeUserById(long id) {
-        try {Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction();
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.getTransaction();
+        try{
+            tx.begin();
             session.createQuery("DELETE users WHERE id = :id").executeUpdate();
             tx.commit();
             System.out.println("\tПользователь удален");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            if (tx.getStatus() == ACTIVE || tx.getStatus() == MARKED_ROLLBACK) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
         }
     }
+
 
     @Override
     public List getAllUsers() {
         List users;
         try (Session session = sessionFactory.openSession()) {
-          users = (session.createSQLQuery(GET_ALL_USERS).addEntity(User.class)).list();
-          session.close();
+            users = (session.createSQLQuery(GET_ALL_USERS).addEntity(User.class)).list();
+            session.close();
         }
         return users;
     }
@@ -87,5 +105,4 @@ public class UserDaoHibernateImpl implements UserDao {
 
     }
 }
-
 
